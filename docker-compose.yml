@@ -1,0 +1,66 @@
+# Local development dependencies.
+#
+#   docker compose up -d
+#   SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
+#
+# The app itself is intentionally not in here — running it from Gradle keeps hot
+# reload and the debugger available. Use the `app` profile below to run it containerised:
+#
+#   docker compose --profile app up -d --build
+
+services:
+  postgres:
+    # PostGIS is required, not optional: the matching pipeline is built on
+    # ST_DWithin / ST_Buffer / ST_LineLocatePoint and GiST indexes.
+    image: postgis/postgis:16-3.4
+    container_name: helpcar-postgres
+    environment:
+      POSTGRES_DB: helpcar
+      POSTGRES_USER: helpcar
+      POSTGRES_PASSWORD: helpcar
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    volumes:
+      - helpcar-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U helpcar -d helpcar"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: helpcar-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - helpcar-redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    profiles: ["app"]
+    build:
+      context: .
+    container_name: helpcar-app
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DATABASE_URL: jdbc:postgresql://postgres:5432/helpcar
+      DATABASE_USERNAME: helpcar
+      DATABASE_PASSWORD: helpcar
+      REDIS_HOST: redis
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  helpcar-pgdata:
+  helpcar-redisdata:

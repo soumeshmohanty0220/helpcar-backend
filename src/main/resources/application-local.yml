@@ -1,0 +1,24 @@
+# Local development profile: run with SPRING_PROFILES_ACTIVE=local
+# Pairs with the services in docker-compose.yml.
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.helpcar: DEBUG
+    org.hibernate.SQL: DEBUG
+    # Uncomment to see bound statement parameters (noisy, never enable in production).
+    # org.hibernate.orm.jdbc.bind: TRACE
