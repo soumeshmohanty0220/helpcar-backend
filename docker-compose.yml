@@ -17,7 +17,7 @@ services:
     environment:
       POSTGRES_DB: helpcar
       POSTGRES_USER: helpcar
-      POSTGRES_PASSWORD: helpcar
+      POSTGRES_PASSWORD:
     ports:
       - "${DATABASE_PORT:-5432}:5432"
     volumes:
@@ -51,7 +51,7 @@ services:
       SPRING_PROFILES_ACTIVE: local
       DATABASE_URL: jdbc:postgresql://postgres:5432/helpcar
       DATABASE_USERNAME: helpcar
-      DATABASE_PASSWORD: helpcar
+      DATABASE_PASSWORD:
       REDIS_HOST: redis
     ports:
       - "${SERVER_PORT:-8080}:8080"

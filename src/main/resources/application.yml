@@ -5,7 +5,7 @@ spring:
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/helpcar}
     username: ${DATABASE_USERNAME:helpcar}
-    password: ${DATABASE_PASSWORD:helpcar}
+    password: ${DATABASE_PASSWORD:}
     hikari:
       maximum-pool-size: ${DATABASE_POOL_SIZE:10}
       pool-name: helpcar-pool
