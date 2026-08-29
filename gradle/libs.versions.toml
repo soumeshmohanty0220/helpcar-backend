@@ -1,0 +1,20 @@
+# Gradle version catalog.
+#
+# Only dependencies NOT managed by the Spring Boot BOM need an explicit version
+# here. Everything declared without a version in build.gradle.kts is pinned by
+# the BOM that the io.spring.dependency-management plugin applies.
+
+[versions]
+springBoot = "3.5.0"
+springDependencyManagement = "1.1.7"
+springdoc = "2.8.0"
+
+[libraries]
+# Spring Boot's BOM manages the version for org.hibernate.orm artifacts,
+# so this entry is intentionally version-less.
+hibernate-spatial = { module = "org.hibernate.orm:hibernate-spatial" }
+springdoc-openapi-webmvc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
